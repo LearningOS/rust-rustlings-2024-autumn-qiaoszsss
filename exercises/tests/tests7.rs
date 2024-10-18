@@ -32,11 +32,32 @@
 // to pass this exercise.
 //
 // Execute `rustlings hint tests7` or use the `hint` watch subcommand for a
-// hint.
 
-// I AM NOT DONE
 
-fn main() {}
+
+
+// build.rs
+use std::env;
+use std::time::SystemTime;
+
+fn main() {
+    // Get the current Unix timestamp
+    let timestamp = SystemTime::now()
+        .duration_since(SystemTime::UNIX_EPOCH)
+        .expect("Time went backwards")
+        .as_secs();
+
+    // Set the TEST_FOO environment variable with the Unix timestamp
+    println!("cargo:rustc-env=TEST_FOO={}", timestamp);
+
+    // Check if the ENABLE_PASS_FEATURE environment variable is set
+    if env::var("ENABLE_PASS_FEATURE").is_ok() {
+        // Enable the 'pass' feature
+        println!("cargo:rustc-cfg=feature=\"pass\"");
+    }
+}
+
+
 
 #[cfg(test)]
 mod tests {

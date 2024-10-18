@@ -7,13 +7,18 @@
 // Execute `rustlings hint traits1` or use the `hint` watch subcommand for a
 // hint.
 
-// I AM NOT DONE
+use std::fmt::format;
+
+
 
 trait AppendBar {
     fn append_bar(self) -> Self;
 }
 
 impl AppendBar for String {
+    fn append_bar(self) -> Self{
+        format!("{}Bar",self)
+    }
     // TODO: Implement `AppendBar` for type `String`.
 }
 

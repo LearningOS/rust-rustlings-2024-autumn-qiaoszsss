@@ -3,18 +3,27 @@
 // Execute `rustlings hint iterators4` or use the `hint` watch subcommand for a
 // hint.
 
-// I AM NOT DONE
+
 
 pub fn factorial(num: u64) -> u64 {
-    // Complete this function to return the factorial of num
-    // Do not use:
-    // - return
-    // Try not to use:
-    // - imperative style loops (for, while)
-    // - additional variables
-    // For an extra challenge, don't use:
-    // - recursion
-    // Execute `rustlings hint iterators4` for hints.
+    // pub fn d0_factorial( acc:u64 ,nun :u64)->u64{
+    //     if nun==0||nun==1{
+    //          acc
+    //     }else{
+            
+    //         d0_factorial(acc*nun, nun-1)
+    //     }
+    // }
+    // d0_factorial(1, num)
+
+    (0..=num).fold(1, |acc,num: u64|{
+        match num{
+            0|1=> acc,
+            _=>acc*num,
+        }
+    })
+
+
 }
 
 #[cfg(test)]

@@ -2,11 +2,11 @@
 	single linked list merge
 	This problem requires you to merge two ordered singly linked lists into one ordered singly linked list
 */
-// I AM NOT DONE
+
 
 use std::fmt::{self, Display, Formatter};
 use std::ptr::NonNull;
-use std::vec::*;
+// use std::vec::*;
 
 #[derive(Debug)]
 struct Node<T> {
@@ -29,13 +29,13 @@ struct LinkedList<T> {
     end: Option<NonNull<Node<T>>>,
 }
 
-impl<T> Default for LinkedList<T> {
+impl<T:Ord> Default for LinkedList<T> {
     fn default() -> Self {
         Self::new()
     }
 }
 
-impl<T> LinkedList<T> {
+impl<T:Ord> LinkedList<T> {
     pub fn new() -> Self {
         Self {
             length: 0,
@@ -57,6 +57,7 @@ impl<T> LinkedList<T> {
     }
 
     pub fn get(&mut self, index: i32) -> Option<&T> {
+        
         self.get_ith_node(self.start, index)
     }
 
@@ -69,15 +70,54 @@ impl<T> LinkedList<T> {
             },
         }
     }
-	pub fn merge(list_a:LinkedList<T>,list_b:LinkedList<T>) -> Self
-	{
-		//TODO
-		Self {
-            length: 0,
-            start: None,
-            end: None,
+    pub fn merge(mut list_a: Self, mut list_b: Self) -> Self {
+        let mut merged_list = LinkedList::new();
+        let mut current_a = list_a.start;
+        let mut current_b = list_b.start;
+
+        while let (Some(node_a), Some(node_b)) = (current_a, current_b) {
+            let val_a = unsafe { &(*node_a.as_ptr()).val };
+            let val_b = unsafe { &(*node_b.as_ptr()).val };
+
+            if val_a <= val_b {
+                let next_a = unsafe { (*node_a.as_ptr()).next };
+                merged_list.append_node(node_a);
+                current_a = next_a;
+            } else {
+                let next_b = unsafe { (*node_b.as_ptr()).next };
+                merged_list.append_node(node_b);
+                current_b = next_b;
+            }
         }
-	}
+
+        // Append remaining nodes from list_a
+        while let Some(node) = current_a {
+            let next = unsafe { (*node.as_ptr()).next };
+            merged_list.append_node(node);
+            current_a = next;
+        }
+
+        // Append remaining nodes from list_b
+        while let Some(node) = current_b {
+            let next = unsafe { (*node.as_ptr()).next };
+            merged_list.append_node(node);
+            current_b = next;
+        }
+
+        merged_list
+    }
+
+    // Helper method to append a node to the end of the list
+    fn append_node(&mut self, node: NonNull<Node<T>>) {
+        let new_node_ptr = Some(node);
+
+        match self.end {
+            None => self.start = new_node_ptr,
+            Some(end_ptr) => unsafe { (*end_ptr.as_ptr()).next = new_node_ptr },
+        }
+        self.end = new_node_ptr;
+        self.length += 1;
+    }
 }
 
 impl<T> Display for LinkedList<T>
